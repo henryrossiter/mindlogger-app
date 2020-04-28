@@ -6,12 +6,13 @@ import { Actions } from 'react-native-router-flux';
 import styles from './styles';
 
 export default class Consent extends Component { // eslint-disable-line
-  componentWillMount() {
-    this.setState({
+  constructor() {
+    super();
+    this.state = {
       content: false,
       storage: false,
       contact: false,
-    });
+    };
   }
 
   onNext = () => {
