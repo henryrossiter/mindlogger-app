@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   tickMark: {
     position: 'absolute',
-    bottom: -33,
+    bottom: -12,
   },
   knobLabel: {
     position: 'absolute',
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     minWidth: 50,
   },
   knobLabelText: {
-    fontSize: 10,
+    fontSize: 14,
     textAlign: 'center',
   },
   ticks: {
@@ -135,12 +135,12 @@ const styles = StyleSheet.create({
   },
   tick: {
     position: 'absolute',
-    fontSize: 12,
+    fontSize: 14,
     textAlign: 'center',
   },
   tickLabel: {
     paddingLeft: 5,
-    fontSize: 12,
+    fontSize: 14,
     color: '#a0a0a0',
   },
 });
@@ -304,6 +304,28 @@ class Slider extends Component {
     );
   }
 
+  calculateLabelPosition = () => {
+    const {
+      minimumValue,
+      currentValue,
+      maximumValue,
+      sliderWidth,
+    } = this.state;
+
+    if (currentValue === minimumValue) {
+      return 20;
+    }
+    if (currentValue === maximumValue) {
+      return sliderWidth;
+    }
+
+    return (
+      (sliderWidth * (currentValue - minimumValue))
+        / (maximumValue - minimumValue)
+      + 20 / (currentValue - minimumValue)
+    );
+  };
+
   render() {
     const { currentValue, minimumValue, maximumValue, tickMarks } = this.state;
 
@@ -323,14 +345,19 @@ class Slider extends Component {
     if (currentVal === minimumValue - 1) {
       currentVal = minimumValue;
     }
+    const left = this.calculateLabelPosition();
 
     return (
       <View style={styles.container}>
         <View style={styles.sliderWrapper}>
+          {!!currentValue && (
+            <View style={[styles.knobLabel, { left }]}>
+              <Text style={styles.knobLabelText}>{currentValue} F</Text>
+            </View>
+          )}
           {tickMarks.map(tickMark => (
             <View key={tickMark.value} style={[styles.tickMark, { left: tickMark.left }]}>
               <Text style={styles.tickLabel}> l </Text>
-              <Text> { tickMark.value } </Text>
             </View>
           ))}
           <TouchableWithoutFeedback onPressIn={this.tapSliderHandler}>
@@ -345,7 +372,7 @@ class Slider extends Component {
                 maximumTrackTintColor="#CCC"
                 trackStyle={styles.track}
                 thumbStyle={currentVal >= minimumValue ? styles.thumb : styles.thumbUnselected}
-                step={itemList ? 1 : 0}
+                step={0.1}
                 onSlidingStart={onPress}
                 onSlidingComplete={(val) => {
                   onRelease();
