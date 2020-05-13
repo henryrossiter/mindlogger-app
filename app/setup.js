@@ -15,6 +15,8 @@ import { startFreshResponse } from './state/responses/responses.thunks';
 import { currentAppletSelector } from './state/app/app.selectors';
 import FireBaseMessaging from './components/FireBaseMessaging';
 
+console.disableYellowBox = true;
+
 const resetBaseCount = () => {
   if (Platform.OS === 'ios') {
     PushNotificationIOS.setApplicationIconBadgeNumber(0);
